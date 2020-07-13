@@ -1,5 +1,6 @@
 ﻿using DAN_XLV_Kristina_Garcia_Francisco.Model;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DAN_XLV_Kristina_Garcia_Francisco.Helper
 {
@@ -23,21 +24,24 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.Helper
             }
 
             // Get the current id card
-            for (int i = 0; i < AllProducts.Count; i++)
+            if (AllProducts != null)
             {
-                if (AllProducts[i].ProductID == id)
+                for (int i = 0; i < AllProducts.Count; i++)
                 {
-                    currentProductCode = AllProducts[i].ProductCode;
-                    break;
+                    if (AllProducts[i].ProductID == id)
+                    {
+                        currentProductCode = AllProducts[i].ProductCode;
+                        break;
+                    }
                 }
-            }
 
-            // Check if the id card already exists, but it is not the current user jmbg
-            for (int i = 0; i < AllProducts.Count; i++)
-            {
-                if (AllProducts[i].ProductCode == productCode && currentProductCode != productCode)
+                // Check if the id card already exists, but it is not the current user jmbg
+                for (int i = 0; i < AllProducts.Count; i++)
                 {
-                    return "This Product Code already exists!";
+                    if (AllProducts[i].ProductCode == productCode && currentProductCode != productCode)
+                    {
+                        return "This Product Code already exists!";
+                    }
                 }
             }
 
@@ -56,16 +60,57 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.Helper
             }
         }
 
-        public string IsZero(int number)
+        public string InputQunaitity(int number, int id)
         {
+            Service service = new Service();
+            int currentQuantity = 0;
+
             if (number <= 0)
             {
                 return "Cannot be zero";
             }
-            else
+
+            // Get the current quantity
+            if (service.GetAllProducts() != null)
             {
-                return null;
+                for (int i = 0; i < service.GetAllProducts().Count; i++)
+                {
+                    if (service.GetAllProducts()[i].ProductID == id)
+                    {
+                        currentQuantity = service.GetAllProducts()[i].Quantity;
+                        break;
+                    }
+                }
             }
+
+            // Only when editing a product that was stored
+            int totalQuantity = 0;
+
+            if (service.GetAllProducts() != null)
+            {
+                if (service.GetAllProducts().Where(product => product.Stored == true) != null)
+                {
+                    var StoredProduct = service.GetAllProducts().Where(product => product.Stored == true).ToList();
+
+                    for (int i = 0; i < StoredProduct.Count; i++)
+                    {
+                        totalQuantity = totalQuantity + StoredProduct[i].Quantity;
+                    }
+
+                    for (int i = 0; i < StoredProduct.Count; i++)
+                    {
+                        if (StoredProduct[i].ProductID == id)
+                        {
+                            if (totalQuantity > 100 && currentQuantity != number)
+                            {
+                                return "Total cannot be bigger than 100";
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

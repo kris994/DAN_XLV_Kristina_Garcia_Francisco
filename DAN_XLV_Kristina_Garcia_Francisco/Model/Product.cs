@@ -68,7 +68,7 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.Model
                         break;
 
                     case "Quantity":
-                        result = this.validation.IsZero(Quantity);
+                        result = this.validation.InputQunaitity(Quantity, ProductID);
                         break;
 
                     default:
