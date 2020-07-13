@@ -73,14 +73,14 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
 
             if (Username == "Mag2019" && password == "Mag2019")
             {
-               // MainWindow mw = new MainWindow();
-                InfoLabel = "Mag2019";
-               // view.Close();
-                //mw.Show();
+                InfoLabel = "Logged in";
+                ManagerWindow mw = new ManagerWindow();             
+                view.Close();
+                mw.Show();
             }
             else if (Username == "Man2019" && password == "Man2019")
             {
-                InfoLabel = "Man2019";
+                InfoLabel = "Logged in";
             }
             else
             {

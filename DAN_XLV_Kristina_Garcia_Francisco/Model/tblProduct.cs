@@ -15,7 +15,7 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.Model
     public partial class tblProduct
     {
         public int ProductID { get; set; }
-        public int ProductCode { get; set; }
+        public string ProductCode { get; set; }
         public string ProductName { get; set; }
         public int Quantity { get; set; }
         public string Price { get; set; }
