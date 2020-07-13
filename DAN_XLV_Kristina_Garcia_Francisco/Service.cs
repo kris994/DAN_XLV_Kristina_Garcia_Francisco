@@ -1,4 +1,5 @@
 ﻿using DAN_XLV_Kristina_Garcia_Francisco.Model;
+using DAN_XLV_Kristina_Garcia_Francisco.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +13,32 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
     /// </summary>
     class Service
     {
+        Logger logger = new Logger();
+
+        #region Event logger
+        /// <summary>
+        /// Delegate used to send notifications depending on the parameter value.
+        /// </summary>
+        /// <param name="text">text that is being added to the file</param>
+        public delegate void Notification(string text);
+        /// <summary>
+        /// Event that gets triggered when a text is given
+        /// </summary>
+        public event Notification OnNotification;
+
+        /// <summary>
+        /// Checks if there is any given value to trigger the event
+        /// </summary>
+        /// <param name="text">Parameter given to notify</param>
+        internal void Notify(string text)
+        {
+            if (OnNotification != null)
+            {
+                OnNotification(text);
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Gets all information about products
         /// </summary>
@@ -24,6 +51,7 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
                 {
                     List<tblProduct> list = new List<tblProduct>();
                     list = (from x in context.tblProducts select x).ToList();
+                    OnNotification = logger.WriteToFile;
                     return list;
                 }
             }
@@ -63,7 +91,7 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
 
                         context.tblProducts.Add(newProduct);
                         context.SaveChanges();
-                        product.ProductID = newProduct.ProductID;
+                        product.ProductID = newProduct.ProductID;                       
                         return product;
                     }
                     else
@@ -77,7 +105,7 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
                         productToEdit.Stored = product.Stored;
                         productToEdit.ProductID = product.ProductID;
 
-                        context.SaveChanges();
+                        context.SaveChanges();                       
                         return product;
                     }
                 }
@@ -136,8 +164,8 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
                     {
                         // find the product removing them
                         tblProduct productToDelete = (from r in context.tblProducts where r.ProductID == productID select r).First();
-
                         context.tblProducts.Remove(productToDelete);
+
                         context.SaveChanges();
                     }
                     else

@@ -170,6 +170,7 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
                 {
                     if (Product != null)
                     {
+                        service.Notify("Deleted " + product.ProductName + ", code " + product.ProductCode + ", quantity " + product.Quantity + ", price " + product.Price);
                         int productID = Product.ProductID;
                         service.DeleteProduct(productID);
                         UnstoredProduct = service.GetAllProducts().ToList();
@@ -230,8 +231,17 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
                     AddProduct addProduct = new AddProduct(Product);
                     addProduct.ShowDialog();
 
+                    // Save update to string
+                    string productUpdateText = "Updated " + product.ProductName + ", code " + product.ProductCode + ", quantity " + product.Quantity + ", price " + product.Price;
+
                     StoredProduct = service.GetAllProducts().Where(product => product.Stored == true).ToList();
                     UnstoredProduct = service.GetAllProducts().Where(product => product.Stored == false).ToList();
+                   
+                    // Save to file only if the data was updated
+                    if ((addProduct.DataContext as AddProductViewModel).IsUpdateProduct == true)
+                    {
+                        service.Notify(productUpdateText);
+                    }
                 }
             }
             catch (Exception ex)
@@ -277,6 +287,8 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
                 if ((addProduct.DataContext as AddProductViewModel).IsUpdateProduct == true)
                 {
                     UnstoredProduct = service.GetAllProducts().Where(product => product.Stored == false).ToList();
+                    service.Notify("Added " + UnstoredProduct.LastOrDefault().ProductName + ", code " + UnstoredProduct.LastOrDefault().ProductCode 
+                        + ", quantity " + UnstoredProduct.LastOrDefault().Quantity + ", price " + UnstoredProduct.LastOrDefault().Price);
                 }
             }
             catch (Exception ex)
