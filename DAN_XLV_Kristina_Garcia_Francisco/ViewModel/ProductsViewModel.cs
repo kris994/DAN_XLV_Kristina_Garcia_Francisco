@@ -408,13 +408,14 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
                 int countUnstored = UnstoredProduct.Count;
                 service.StoreProduct(Product);
 
+                string storedProductName = product.ProductName;
                 StoredProduct = service.GetAllProducts().Where(product => product.Stored == true).ToList();
                 UnstoredProduct = service.GetAllProducts().Where(product => product.Stored == false).ToList();
                 Priview();
 
                 if (countUnstored != UnstoredProduct.Count)
                 {
-                    StoreNotify("Stored the product " + UnstoredProduct.LastOrDefault().ProductName +
+                    StoreNotify("Stored the product " + storedProductName +
                         "\nCurrent storage count is: " + service.TotalQuantity(), "#28A745");
                 }
                 else

@@ -101,10 +101,11 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.Helper
                     {
                         if (StoredProduct[i].ProductID == id)
                         {
-                            if (totalQuantity > 100 && currentQuantity != number)
+                            if (totalQuantity - currentQuantity + number > 100 && currentQuantity != number)
                             {
                                 return "Total cannot be bigger than 100";
                             }
+                            break;
                         }
                     }
                 }
