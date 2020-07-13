@@ -62,11 +62,6 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
             }
         }
 
-        internal object GetAllReports()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Creates or edits a product
         /// </summary>
@@ -178,6 +173,52 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
             {
                 Debug.WriteLine("Exception" + ex.Message.ToString());
             }
+        }
+
+        /// <summary>
+        /// Stores a product
+        /// </summary>
+        /// <param name="product">the product that is stored</param>
+        /// <returns>stored product</returns>
+        public tblProduct StoreProduct(tblProduct product)
+        {
+            if (TotalQuantity() + product.Quantity <= 100)
+            {
+                try
+                {
+                    using (ProductDBEntities context = new ProductDBEntities())
+                    {
+                        tblProduct productToStore = (from ss in context.tblProducts where ss.ProductID == product.ProductID select ss).First();
+
+                        productToStore.Stored = true;
+
+                        context.SaveChanges();
+                        return product;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Exception" + ex.Message.ToString());
+                    return null;
+                }
+            }
+            else
+            {
+                return product;
+            }
+        }
+
+        public int TotalQuantity()
+        {
+            var StoredProduct = GetAllProducts().Where(product => product.Stored == true).ToList();
+            int quantity = 0;
+
+            for (int i = 0; i < StoredProduct.Count; i++)
+            {
+                quantity = quantity + StoredProduct[i].Quantity;
+            }
+
+            return quantity;
         }
     }
 }

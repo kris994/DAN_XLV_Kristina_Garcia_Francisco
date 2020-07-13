@@ -4,11 +4,11 @@ using System.Windows;
 namespace DAN_XLV_Kristina_Garcia_Francisco.View
 {
     /// <summary>
-    /// Interaction logic for ManagerWindow.xaml
+    /// Interaction logic for StorekeeperWindow.xaml
     /// </summary>
-    public partial class ManagerWindow : Window
+    public partial class StorekeeperWindow : Window
     {
-        public ManagerWindow()
+        public StorekeeperWindow()
         {
             InitializeComponent();
             this.DataContext = new ProductsViewModel(this);

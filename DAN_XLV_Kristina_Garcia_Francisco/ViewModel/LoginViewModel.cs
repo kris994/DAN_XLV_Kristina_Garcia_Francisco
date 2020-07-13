@@ -71,16 +71,19 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
         {
             string password = (obj as PasswordBox).Password;
 
-            if (Username == "Mag2019" && password == "Mag2019")
+            if (Username == "Man2019" && password == "Man2019")
             {
                 InfoLabel = "Logged in";
                 ManagerWindow mw = new ManagerWindow();             
                 view.Close();
                 mw.Show();
             }
-            else if (Username == "Man2019" && password == "Man2019")
+            else if (Username == "Mag2019" && password == "Mag2019")
             {
                 InfoLabel = "Logged in";
+                StorekeeperWindow skw = new StorekeeperWindow();
+                view.Close();
+                skw.Show();
             }
             else
             {

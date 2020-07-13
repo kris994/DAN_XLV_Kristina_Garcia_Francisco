@@ -3,15 +3,17 @@ using DAN_XLV_Kristina_Garcia_Francisco.Model;
 using DAN_XLV_Kristina_Garcia_Francisco.View;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
 namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
 {
-    class ManagerViewModel : BaseViewModel
+    class ProductsViewModel : BaseViewModel
     {
         ManagerWindow manager;
+        StorekeeperWindow storekeeper;
         Service service = new Service();
 
         #region Constructor
@@ -19,9 +21,21 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
         /// Constructor with Manager Window param
         /// </summary>
         /// <param name="managerOpen">opens the manager window</param>
-        public ManagerViewModel(ManagerWindow managerOpen)
+        public ProductsViewModel(ManagerWindow managerOpen)
         {
             manager = managerOpen;
+            UnstoredProduct = service.GetAllProducts().Where(product => product.Stored == false).ToList();
+            StoredProduct = service.GetAllProducts().Where(product => product.Stored == true).ToList();
+            Priview();
+        }
+
+        /// <summary>
+        /// Constructor with Storekeeper Window param
+        /// </summary>
+        /// <param name="storekeeperOpen">opens the storekeeper window</param>
+        public ProductsViewModel(StorekeeperWindow storekeeperOpen)
+        {
+            storekeeper = storekeeperOpen;
             UnstoredProduct = service.GetAllProducts().Where(product => product.Stored == false).ToList();
             StoredProduct = service.GetAllProducts().Where(product => product.Stored == true).ToList();
             Priview();
@@ -112,8 +126,67 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
                 storedProductExists = value;
                 OnPropertyChanged("StoredProductExists");
             }
-        }       
+        }
+
+        private string storeLabel;
+        public string StoreLabel
+        {
+            get
+            {
+                return storeLabel;
+            }
+            set
+            {
+                storeLabel = value;
+                OnPropertyChanged("StoreLabel");
+            }
+        }
+        private string storeInfoColor;
+        public string StoreInfoColor
+        {
+            get
+            {
+                return storeInfoColor;
+            }
+            set
+            {
+                storeInfoColor = value;
+                OnPropertyChanged("StoreInfoColor");
+            }
+        }
+
         #endregion
+
+        #region Event
+        /// <summary>
+        /// Delegate used to send store notifications depending on the parameter value.
+        /// </summary>
+        /// <param name="text">text that is being shown to the user</param>
+        /// <param name="infoColor">info color that is shown to the user</param>
+        public delegate void StoreNotification(string text, string infoColor);
+        /// <summary>
+        /// Event that gets triggered when a text is given
+        /// </summary>
+        public event StoreNotification OnStoreNotification;
+        /// <summary>
+        /// Checks if there is any given value to trigger the event
+        /// </summary>
+        /// <param name="text">Parameter given to notify</param>
+        /// <param name="infoColor">Parameter color given to notify</param>
+        internal void StoreNotify(string text, string infoColor)
+        {
+            if (OnStoreNotification != null)
+            {
+                OnStoreNotification(text, infoColor);
+            }
+        }
+        #endregion
+
+        public void StoreInfoValue(string text, string infoColor)
+        {
+            StoreLabel = text;
+            StoreInfoColor = infoColor;
+        }
 
         /// <summary>
         /// Check if the product table will be shown or not depending if its empty or not
@@ -290,6 +363,7 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
                     service.Notify("Added " + UnstoredProduct.LastOrDefault().ProductName + ", code " + UnstoredProduct.LastOrDefault().ProductCode 
                         + ", quantity " + UnstoredProduct.LastOrDefault().Quantity + ", price " + UnstoredProduct.LastOrDefault().Price);
                 }
+                Priview();
             }
             catch (Exception ex)
             {
@@ -303,7 +377,75 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
         /// <returns>true</returns>
         private bool CanAddNewProductExecute()
         {
+            OnStoreNotification = StoreInfoValue;
             return true;
+        }
+
+        /// <summary>
+        /// Command that tries to store the product
+        /// </summary>
+        private ICommand storeProduct;
+        public ICommand StoreProduct
+        {
+            get
+            {
+                if (storeProduct == null)
+                {
+                    storeProduct = new RelayCommand(param => StoreProductExecute(), param => CanStoreProductExecute());
+                }
+                return storeProduct;
+            }
+        }
+
+        /// <summary>
+        /// Tries the execute the store product command
+        /// </summary>
+        private void StoreProductExecute()
+        {
+            OnStoreNotification = StoreInfoValue;
+            try
+            {
+                int countUnstored = UnstoredProduct.Count;
+                service.StoreProduct(Product);
+
+                string storedProductName = product.ProductName;
+                StoredProduct = service.GetAllProducts().Where(product => product.Stored == true).ToList();
+                UnstoredProduct = service.GetAllProducts().Where(product => product.Stored == false).ToList();
+                Priview();
+
+                if (countUnstored != UnstoredProduct.Count)
+                {
+                    StoreNotify("Stored the product " + storedProductName +
+                        "\nCurrent storage count is: " + service.TotalQuantity(), "#28A745");
+                }
+                else
+                {
+                    StoreNotify("Failed to store the product\nbecause it exceedes the total store capacity.", "#FFC107");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception" + ex.Message.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Checks if its possible to store the product
+        /// </summary>
+        protected bool CanStoreProductExecute()
+        {
+            int storeQuantity = service.TotalQuantity();
+
+            if (storeQuantity >= 100)
+            {
+                OnStoreNotification = StoreInfoValue;
+                StoreNotify("Current storage count is: " + storeQuantity, "#5BCED0");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         /// <summary>
@@ -330,7 +472,9 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
             try
             {
                 Login login = new Login();
-                manager.Close();
+
+                // Closes the current window
+                Application.Current.Windows[0].Close();
                 login.Show();
             }
             catch (Exception ex)

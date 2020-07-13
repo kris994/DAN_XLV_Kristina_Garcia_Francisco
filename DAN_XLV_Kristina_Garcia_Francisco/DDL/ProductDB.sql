@@ -9,7 +9,7 @@ GO
 USE ProductDB
 CREATE TABLE tblProduct(
 	ProductID INT IDENTITY(1,1) PRIMARY KEY 	NOT NULL,
-	ProductCode INT UNIQUE						NOT NULL,
+	ProductCode VARCHAR(40) UNIQUE				NOT NULL,
 	ProductName VARCHAR(40)						NOT NULL,
 	Quantity INT								NOT NULL,
 	Price VARCHAR(20)							NOT NULL,

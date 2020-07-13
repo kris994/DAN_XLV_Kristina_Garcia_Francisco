@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DAN_XLV_Kristina_Garcia_Francisco.View"
         xmlns:model="clr-namespace:DAN_XLV_Kristina_Garcia_Francisco.Model"
         mc:Ignorable="d"
-        Title="Add Product" Height="450" Width="350" Background="#5BCED0">
+        Title="Add Product" Height="250" Width="350" Background="#5BCED0">
     <Window.Resources>
         <model:tblProduct x:Key="data"/>
 
