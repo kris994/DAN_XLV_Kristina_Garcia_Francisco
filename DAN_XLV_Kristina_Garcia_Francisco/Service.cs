@@ -208,6 +208,10 @@ namespace DAN_XLV_Kristina_Garcia_Francisco
             }
         }
 
+        /// <summary>
+        /// Calculates the total amount of products in the storage
+        /// </summary>
+        /// <returns>the total product value</returns>
         public int TotalQuantity()
         {
             var StoredProduct = GetAllProducts().Where(product => product.Stored == true).ToList();

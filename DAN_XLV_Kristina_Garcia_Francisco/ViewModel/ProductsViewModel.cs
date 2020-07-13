@@ -10,6 +10,9 @@ using System.Windows.Input;
 
 namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
 {
+    /// <summary>
+    /// Products ViewModel
+    /// </summary>
     class ProductsViewModel : BaseViewModel
     {
         ManagerWindow manager;
@@ -246,7 +249,8 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
                         service.Notify("Deleted " + product.ProductName + ", code " + product.ProductCode + ", quantity " + product.Quantity + ", price " + product.Price);
                         int productID = Product.ProductID;
                         service.DeleteProduct(productID);
-                        UnstoredProduct = service.GetAllProducts().ToList();
+                        UnstoredProduct = service.GetAllProducts().Where(product => product.Stored == false).ToList();
+                        Priview();
                     }
                 }
                 catch (Exception ex)

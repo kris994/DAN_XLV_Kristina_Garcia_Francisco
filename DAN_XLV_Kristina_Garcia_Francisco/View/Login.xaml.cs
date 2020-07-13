@@ -8,6 +8,9 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.View
     /// </summary>
     public partial class Login : Window
     {
+        /// <summary>
+        /// Login Window
+        /// </summary>
         public Login()
         {
             InitializeComponent();

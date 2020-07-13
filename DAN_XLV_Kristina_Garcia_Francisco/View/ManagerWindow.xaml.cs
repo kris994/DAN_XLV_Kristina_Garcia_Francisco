@@ -8,6 +8,9 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.View
     /// </summary>
     public partial class ManagerWindow : Window
     {
+        /// <summary>
+        /// Manager Window
+        /// </summary>
         public ManagerWindow()
         {
             InitializeComponent();

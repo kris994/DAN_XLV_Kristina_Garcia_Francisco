@@ -5,6 +5,9 @@ using System.Windows.Input;
 
 namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
 {
+    /// <summary>
+    /// Login ViewModel
+    /// </summary>
     class LoginViewModel : BaseViewModel
     {
         Login view;

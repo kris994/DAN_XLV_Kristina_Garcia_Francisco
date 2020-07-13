@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace DAN_XLV_Kristina_Garcia_Francisco.Helper
 {
+    /// <summary>
+    /// Validates the user inputs
+    /// </summary>
     class Validations
     {
         /// <summary>
@@ -60,6 +63,12 @@ namespace DAN_XLV_Kristina_Garcia_Francisco.Helper
             }
         }
 
+        /// <summary>
+        /// Checks if the input quantity is valid
+        /// </summary>
+        /// <param name="number">the quantity number</param>
+        /// <param name="id">the product id</param>
+        /// <returns></returns>
         public string InputQunaitity(int number, int id)
         {
             Service service = new Service();

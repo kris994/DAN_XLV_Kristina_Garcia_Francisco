@@ -10,6 +10,9 @@ using System.Windows.Input;
 
 namespace DAN_XLV_Kristina_Garcia_Francisco.ViewModel
 {
+    /// <summary>
+    /// Add Product ViewModel
+    /// </summary>
     class AddProductViewModel : BaseViewModel
     {
         AddProduct addProduct;
